@@ -41,13 +41,22 @@
 #define READY           2
 #define RUNNING         3
 
-void xTaskCreate(unsigned long *pvTaskCode, unsigned char Id, unsigned char Prior);
+void xTaskCreate(unsigned long pvTaskCode, unsigned char Id, unsigned char Prior);
 
 void vTaskDelete(void);
 
 void OSRun(void);
 
 void OSInit();
+
+void FunctionD(void);
+
+void FunctionC(void);
+
+void FunctionB(void);
+
+void FunctionA(void);
+
 // TODO Insert appropriate #include <>
 
 // TODO Insert C++ class definitions if appropriate
@@ -90,4 +99,3 @@ extern "C" {
 #endif /* __cplusplus */
 
 #endif	/* XC_HEADER_TEMPLATE_H */
-
