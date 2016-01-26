@@ -34,7 +34,7 @@ void xTaskCreate(unsigned long pvTaskCode, unsigned char Id, unsigned char Prior
     TaskArray[taskPosition].currentAdd2=(pvTaskCode & 0x0000ff00) >> 8;
     TaskArray[taskPosition].currentAdd1=(pvTaskCode & 0x000000ff);
     TaskArray[taskPosition].Priority=Prior;
-    if(TaskArray[actualPosition].Priority > Prior){
+    if(TaskArray[actualPosition].Priority >= Prior){
         TaskArray[actualPosition].currentAdd3=TOSU;
         TaskArray[actualPosition].currentAdd2=TOSH;
         TaskArray[actualPosition].currentAdd1=TOSL;
@@ -84,7 +84,7 @@ void OSRun(void){
     
        //TaskArray[actualPosition].state=READY; 
        TaskArray[index].state=RUNNING; 
-       STKPTR += 3;                                    //Each time we jump to osRun, the previous PC is saved into the stack, to prevent overflow make adjust
+       STKPTR++;                                    //Each time we jump to osRun, the previous PC is saved into the stack, to prevent overflow make adjust
        actualPosition=index;
        PCLATU = TaskArray[index].currentAdd3;
        PCLATH = TaskArray[index].currentAdd2;         //Here we should jump
@@ -93,10 +93,20 @@ void OSRun(void){
     //here we jump to the next task  
 }
 
+void FunctionE(void){
+    asm("nop");
+    asm("nop");
+    asm("nop");
+    asm("nop");
+    vTaskDelete();
+    
+}
+
 void FunctionD(void){
     asm("nop");
     asm("nop");
     asm("nop");
+    xTaskCreate(FunctionE,0,2);
     asm("nop");
     vTaskDelete();
     
@@ -115,9 +125,7 @@ void FunctionB(void){
     asm("nop");
     asm("nop");
     xTaskCreate(FunctionC,7,10);
-    asm("nop");
-    asm("nop");
-    vTaskDelete();    
+    vTaskDelete(); 
 }
 
 void FunctionA(void){

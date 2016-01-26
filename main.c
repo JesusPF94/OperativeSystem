@@ -18,6 +18,7 @@ void low_priority interrupt Low_Priority_Interrupt(void) {
     FunctionB();
     FunctionC();
     FunctionD();
+    FunctionE();
 }
 
  void WA_method(void){

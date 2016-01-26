@@ -49,6 +49,8 @@ void OSRun(void);
 
 void OSInit();
 
+void FunctionE(void);
+
 void FunctionD(void);
 
 void FunctionC(void);
