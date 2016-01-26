@@ -13,6 +13,13 @@
 
 static int WA=0;
 
+void low_priority interrupt Low_Priority_Interrupt(void) {
+    FunctionA();
+    FunctionB();
+    FunctionC();
+    FunctionD();
+}
+
  void WA_method(void){
      if(WA > 50){
           FunctionA();
@@ -25,7 +32,7 @@ static int WA=0;
      }
  }
  void funcionMLP(){
-         asm("nop");
+    asm("nop");
     asm("nop");
     asm("nop");
 
@@ -33,7 +40,7 @@ static int WA=0;
  
 void main(void) {
     //unsigned int* pc3=0xFF9,            pc2=0xFFA,            pc1=0xFFB;
-    funcionMLP();
+    //funcionMLP();
    // WA_method();
     //WA++;
   //  pc1 = (&FunctionA & 0x000000ff);
@@ -43,7 +50,8 @@ void main(void) {
     asm("nop");
     asm("nop");
     OSInit();
-    xTaskCreate(&funcionMLP,1,15);   
+    xTaskCreate(&FunctionA,1,15); 
+    
    // FunctionA();
     return;
 }

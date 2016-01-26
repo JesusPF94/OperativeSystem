@@ -34,6 +34,11 @@ void xTaskCreate(unsigned long pvTaskCode, unsigned char Id, unsigned char Prior
     TaskArray[taskPosition].currentAdd2=(pvTaskCode & 0x0000ff00) >> 8;
     TaskArray[taskPosition].currentAdd1=(pvTaskCode & 0x000000ff);
     TaskArray[taskPosition].Priority=Prior;
+    if(TaskArray[actualPosition].Priority > Prior){
+        TaskArray[actualPosition].currentAdd3=TOSU;
+        TaskArray[actualPosition].currentAdd2=TOSH;
+        TaskArray[actualPosition].currentAdd1=TOSL;
+    }
     OSRun();
 }
 
@@ -63,13 +68,21 @@ void OSRun(void){
     unsigned char index=0,
                   i;
     unsigned char minPrior=255;
+    
     for(i=0;i<TASKNUMBER ; i++){
         if(TaskArray[i].Priority < minPrior && (TaskArray[i].state==READY||TaskArray[i].state==RUNNING)){
             index=i;
             minPrior = TaskArray[index].Priority;
         } 
     }
-       TaskArray[actualPosition].state=READY; 
+    
+   /* if(TaskArray[actualPosition].state==RUNNING){
+        TaskArray[actualPosition].currentAdd3 = STKPTR;
+        TaskArray[actualPosition].currentAdd3 = (STKPTR+1);
+        TaskArray[actualPosition].currentAdd3 = (STKPTR+2);
+    }*/
+    
+       //TaskArray[actualPosition].state=READY; 
        TaskArray[index].state=RUNNING; 
        STKPTR += 3;                                    //Each time we jump to osRun, the previous PC is saved into the stack, to prevent overflow make adjust
        actualPosition=index;
@@ -92,7 +105,7 @@ void FunctionD(void){
 void FunctionC(void){
     asm("nop");
     asm("nop");
-    xTaskCreate(&FunctionD,2,4);
+    xTaskCreate(FunctionD,2,4);
     asm("nop");
     asm("nop");
     vTaskDelete();
@@ -101,7 +114,7 @@ void FunctionC(void){
 void FunctionB(void){
     asm("nop");
     asm("nop");
-    xTaskCreate(&FunctionC,7,10);
+    xTaskCreate(FunctionC,7,10);
     asm("nop");
     asm("nop");
     vTaskDelete();    
@@ -111,7 +124,7 @@ void FunctionA(void){
     asm("nop");
     asm("nop");
     asm("nop");
-    xTaskCreate(&FunctionB,4,12);
+    xTaskCreate(FunctionB,4,12);
     asm("nop");
     asm("nop");
     vTaskDelete();
