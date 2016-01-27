@@ -40,6 +40,11 @@
 #define WAIT            1
 #define READY           2
 #define RUNNING         3
+#define ON              1
+#define OFF             0
+
+#define vTaskStartScheduler() schedulerStatus=1
+#define vTaskEndScheduler()   schedulerStatus=0
 
 void xTaskCreate(unsigned long pvTaskCode, unsigned char Id, unsigned char Prior);
 

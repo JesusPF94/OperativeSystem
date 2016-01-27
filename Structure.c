@@ -7,6 +7,7 @@ static unsigned char actualPosition=0;           //This is the indexOf the proce
 static unsigned char schedulerAdd1=0;
 static unsigned char schedulerAdd2=0;
 static unsigned char schedulerAdd3=0;
+static unsigned char schedulerStatus;
 
 struct Task{
     unsigned char Add1;
@@ -65,6 +66,7 @@ void OSInit(){
 
 
 void OSRun(void){
+    if(schedulerStatus=ON){    
     unsigned char index=0,
                   i;
     unsigned char minPrior=255;
@@ -75,14 +77,7 @@ void OSRun(void){
             minPrior = TaskArray[index].Priority;
         } 
     }
-    
-   /* if(TaskArray[actualPosition].state==RUNNING){
-        TaskArray[actualPosition].currentAdd3 = STKPTR;
-        TaskArray[actualPosition].currentAdd3 = (STKPTR+1);
-        TaskArray[actualPosition].currentAdd3 = (STKPTR+2);
-    }*/
-    
-       //TaskArray[actualPosition].state=READY; 
+     
        TaskArray[index].state=RUNNING; 
        STKPTR++;                                    //Each time we jump to osRun, the previous PC is saved into the stack, to prevent overflow make adjust
        actualPosition=index;
@@ -91,7 +86,13 @@ void OSRun(void){
        PCL = TaskArray[index].currentAdd1;    
     //we save the pc which is pointing the following app, we increase it by two to point 
     //here we jump to the next task  
+
+    }
 }
+
+/*void vTaskStartScheduler(void){
+    
+}*/
 
 void FunctionE(void){
     asm("nop");

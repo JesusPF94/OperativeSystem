@@ -11,8 +11,6 @@
 #include "Structure.h"
 #include <stdio.h>
 
-static int WA=0;
-
 void low_priority interrupt Low_Priority_Interrupt(void) {
     FunctionA();
     FunctionB();
@@ -20,24 +18,6 @@ void low_priority interrupt Low_Priority_Interrupt(void) {
     FunctionD();
     FunctionE();
 }
-
- void WA_method(void){
-     if(WA > 50){
-          FunctionA();
-          FunctionB();
-          FunctionC();
-          FunctionD();
-     }else{
-         WA++;
-        // break;
-     }
- }
- void funcionMLP(){
-    asm("nop");
-    asm("nop");
-    asm("nop");
-
- }
  
 void main(void) {
     //unsigned int* pc3=0xFF9,            pc2=0xFFA,            pc1=0xFFB;
