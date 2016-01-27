@@ -48,6 +48,8 @@
 
 void xTaskCreate(unsigned long pvTaskCode, unsigned char Id, unsigned char Prior);
 
+void xInterruptTaskCreate(unsigned long pvTaskCode, unsigned char Id, unsigned char Prior);
+
 void vTaskDelete(void);
 
 void OSRun(void);

@@ -24,7 +24,12 @@ struct Task{
 struct Task TaskArray[TASKNUMBER];
 
 void xTaskCreate(unsigned long pvTaskCode, unsigned char Id, unsigned char Prior){
+    GIE = OFF;
     //HEre we save the lastest current PC
+     TaskArray[actualPosition].currentAdd3=TOSU;
+     TaskArray[actualPosition].currentAdd2=TOSH;
+     TaskArray[actualPosition].currentAdd1=TOSL;
+    
     taskPosition=Id;
     TaskArray[taskPosition].Id=Id;
     TaskArray[taskPosition].state=READY;
@@ -35,18 +40,44 @@ void xTaskCreate(unsigned long pvTaskCode, unsigned char Id, unsigned char Prior
     TaskArray[taskPosition].currentAdd2=(pvTaskCode & 0x0000ff00) >> 8;
     TaskArray[taskPosition].currentAdd1=(pvTaskCode & 0x000000ff);
     TaskArray[taskPosition].Priority=Prior;
-    if(TaskArray[actualPosition].Priority >= Prior){
-        TaskArray[actualPosition].currentAdd3=TOSU;
-        TaskArray[actualPosition].currentAdd2=TOSH;
-        TaskArray[actualPosition].currentAdd1=TOSL;
-    }
+   // if(TaskArray[actualPosition].Priority >= Prior){
+       
+   // }
+    STKPTR--;
     OSRun();
 }
 
+void xInterruptTaskCreate(unsigned long pvTaskCode, unsigned char Id, unsigned char Prior){
+    GIE = OFF;
+    TaskArray[actualPosition].currentAdd3=TOSU;
+    TaskArray[actualPosition].currentAdd2=TOSH;
+    TaskArray[actualPosition].currentAdd1=TOSL;
+    //HEre we save the lastest current PC
+    TaskArray[Id].Id=Id;
+    TaskArray[Id].state=READY;
+    TaskArray[Id].Add3=(pvTaskCode & 0x00ff0000) >> 16;
+    TaskArray[Id].Add2=(pvTaskCode & 0x0000ff00) >> 8;
+    TaskArray[Id].Add1=(pvTaskCode & 0x000000ff);
+    TaskArray[Id].currentAdd3=(pvTaskCode & 0x00ff0000) >> 16;
+    TaskArray[Id].currentAdd2=(pvTaskCode & 0x0000ff00) >> 8;
+    TaskArray[Id].currentAdd1=(pvTaskCode & 0x000000ff);
+    TaskArray[Id].Priority=Prior;
+ /*   if(TaskArray[actualPosition].Priority >= Prior    && TaskArray[actualPosition].state == RUNNING){
+        TaskArray[actualPosition].currentAdd3=TOSU;
+        TaskArray[actualPosition].currentAdd2=TOSH;
+        TaskArray[actualPosition].currentAdd1=TOSL;
+    }*/
+    STKPTR--;
+    OSRun();
+}
+
+
 void vTaskDelete(void){
+    GIE = OFF;
     TaskArray[actualPosition].state=SUSPEND;
    // PCLATU = TaskArray[schedulerAdd3].currentAdd3;                  //Regresamos al Scheduler en posición más alta.
    // PCLATH = TaskArray[schedulerAdd2].currentAdd2;                 //Scheduler posición de enmedio.
+   STKPTR--;
     OSRun();
    // STKPTR -= 3;
    // PCL = TaskArray[schedulerAdd1].currentAdd1;
@@ -79,10 +110,11 @@ void OSRun(void){
     }
      
        TaskArray[index].state=RUNNING; 
-       STKPTR++;                                    //Each time we jump to osRun, the previous PC is saved into the stack, to prevent overflow make adjust
+       STKPTR--;                                    //Each time we jump to osRun, the previous PC is saved into the stack, to prevent overflow make adjust
        actualPosition=index;
        PCLATU = TaskArray[index].currentAdd3;
        PCLATH = TaskArray[index].currentAdd2;         //Here we should jump
+       GIE = ON;
        PCL = TaskArray[index].currentAdd1;    
     //we save the pc which is pointing the following app, we increase it by two to point 
     //here we jump to the next task  
@@ -116,7 +148,7 @@ void FunctionD(void){
 void FunctionC(void){
     asm("nop");
     asm("nop");
-    xTaskCreate(FunctionD,2,4);
+    xTaskCreate(FunctionD,2,2);
     asm("nop");
     asm("nop");
     vTaskDelete();
@@ -125,7 +157,7 @@ void FunctionC(void){
 void FunctionB(void){
     asm("nop");
     asm("nop");
-    xTaskCreate(FunctionC,7,10);
+    xTaskCreate(FunctionC,7,1);
     vTaskDelete(); 
 }
 
@@ -133,7 +165,7 @@ void FunctionA(void){
     asm("nop");
     asm("nop");
     asm("nop");
-    xTaskCreate(FunctionB,4,12);
+    xTaskCreate(FunctionB,4,1);
     asm("nop");
     asm("nop");
     vTaskDelete();

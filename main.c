@@ -18,7 +18,18 @@ void low_priority interrupt Low_Priority_Interrupt(void) {
     FunctionD();
     FunctionE();
 }
- 
+
+
+void high_priority interrupt High_Priority_Interrupt(void){
+    INTCON &=  0xFD;
+    asm("nop");
+    xInterruptTaskCreate(&FunctionE,0,15);
+    asm("nop");
+
+}
+
+
+
 void main(void) {
     //unsigned int* pc3=0xFF9,            pc2=0xFFA,            pc1=0xFFB;
     //funcionMLP();
@@ -31,7 +42,12 @@ void main(void) {
     asm("nop");
     asm("nop");
     OSInit();
-    xTaskCreate(&FunctionA,1,15); 
+    GIE=ON;
+   //INT0IE_bit = 1;
+    
+    INTCON |=  0x12;
+    asm("nop");
+    xTaskCreate(&FunctionA,0,0); 
     
    // FunctionA();
     return;
