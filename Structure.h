@@ -34,7 +34,7 @@
 #include <xc.h> // include processor files - each processor file is guarded.  
 #include <pic18f4455.h>
 
-#define TASKNUMBER 10
+#define TASKNUMBER 11
 
 #define SUSPEND         0
 #define WAIT            1

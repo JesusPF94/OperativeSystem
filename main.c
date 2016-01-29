@@ -23,7 +23,7 @@ void low_priority interrupt Low_Priority_Interrupt(void) {
 void high_priority interrupt High_Priority_Interrupt(void){
     INTCON &=  0xFD;
     asm("nop");
-    xInterruptTaskCreate(&FunctionE,0,15);
+    xInterruptTaskCreate(&FunctionE,6,0);
     asm("nop");
 
 }
@@ -36,12 +36,16 @@ void main(void) {
     OSInit();
     GIE=ON;
    //INT0IE_bit = 1;
-    
+    xTaskCreate(&FunctionA,0,10); 
+
     //INTCON |=  0x12;
     asm("nop");
-    xTaskCreate(&FunctionA,9,0); 
+    xTaskCreate(&FunctionA,0,10); 
         asm("nop");
 
-   // FunctionA();
+
+    do{
+        asm("nop");
+    }while(1);    
     return;
 }

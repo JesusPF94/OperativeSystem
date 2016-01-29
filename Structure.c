@@ -3,7 +3,7 @@
 //#define TASKPOSITION unsigned char 
 
 static unsigned char taskPosition=0;
-static unsigned char actualPosition=0;           //This is the indexOf the process executing
+static unsigned char actualPosition=10;           //This is the indexOf the process executing
 static unsigned char schedulerAdd1=0;
 static unsigned char schedulerAdd2=0;
 static unsigned char schedulerAdd3=0;
@@ -101,7 +101,8 @@ void OSInit(){
 
 
 void OSRun(void){
-    minPrior=255;
+    index = 10;
+    minPrior = 255;
     if(schedulerStatus=ON){    
     for(i=0;i<TASKNUMBER ; i++){
         if(TaskArray[i].Priority < minPrior && (TaskArray[i].state==READY||TaskArray[i].state==RUNNING)){
@@ -109,7 +110,9 @@ void OSRun(void){
             minPrior = TaskArray[index].Priority;
         } 
     }
-     
+  //  if(index == 10){
+        
+   // } 
        TaskArray[index].state=RUNNING; 
        STKPTR--;                                    //Each time we jump to osRun, the previous PC is saved into the stack, to prevent overflow make adjust
        actualPosition=index;
@@ -140,7 +143,7 @@ void FunctionD(void){
     asm("nop");
     asm("nop");
     asm("nop");
-    xTaskCreate(FunctionE,3,2);
+  //  xTaskCreate(FunctionE,4,7);
     asm("nop");
     vTaskDelete();
     
@@ -149,7 +152,7 @@ void FunctionD(void){
 void FunctionC(void){
     asm("nop");
     asm("nop");
-    xTaskCreate(FunctionD,2,2);
+    xTaskCreate(FunctionD,3,7);
     asm("nop");
     asm("nop");
     vTaskDelete();
@@ -158,7 +161,8 @@ void FunctionC(void){
 void FunctionB(void){
     asm("nop");
     asm("nop");
-    xTaskCreate(FunctionC,7,1);
+    INTCON |=  0x12;
+    xTaskCreate(FunctionC,2,8);
     vTaskDelete(); 
 }
 
@@ -166,7 +170,7 @@ void FunctionA(void){
     asm("nop");
     asm("nop");
     asm("nop");
-    xTaskCreate(FunctionB,4,1);
+    xTaskCreate(FunctionB,1,9);
     asm("nop");
     asm("nop");
     vTaskDelete();
