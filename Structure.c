@@ -9,6 +9,11 @@ static unsigned char schedulerAdd2=0;
 static unsigned char schedulerAdd3=0;
 static unsigned char schedulerStatus;
 
+//Global modifications
+static unsigned char i;
+static unsigned char index=0;
+static unsigned char minPrior=255;
+
 struct Task{
     unsigned char Add1;
     unsigned char Add2;                          //This is where it starts
@@ -86,7 +91,6 @@ void vTaskDelete(void){
 }
 
 void OSInit(){
-    unsigned char i;
     for(i=0;i<TASKNUMBER ; i++){
         TaskArray[i].Priority=255;
         TaskArray[i].Id=i;
@@ -97,11 +101,8 @@ void OSInit(){
 
 
 void OSRun(void){
+    minPrior=255;
     if(schedulerStatus=ON){    
-    unsigned char index=0,
-                  i;
-    unsigned char minPrior=255;
-    
     for(i=0;i<TASKNUMBER ; i++){
         if(TaskArray[i].Priority < minPrior && (TaskArray[i].state==READY||TaskArray[i].state==RUNNING)){
             index=i;
@@ -139,7 +140,7 @@ void FunctionD(void){
     asm("nop");
     asm("nop");
     asm("nop");
-    xTaskCreate(FunctionE,0,2);
+    xTaskCreate(FunctionE,3,2);
     asm("nop");
     vTaskDelete();
     

@@ -31,24 +31,17 @@ void high_priority interrupt High_Priority_Interrupt(void){
 
 
 void main(void) {
-    //unsigned int* pc3=0xFF9,            pc2=0xFFA,            pc1=0xFFB;
-    //funcionMLP();
-   // WA_method();
-    //WA++;
-  //  pc1 = (&FunctionA & 0x000000ff);
-  //  pc2=(&FunctionA & 0x0000ff00) >> 8;
-  //  pc3=(&FunctionA & 0x00ff0000) >> 16;
-//    PCLAT = &FunctionA ;       
     asm("nop");
     asm("nop");
     OSInit();
     GIE=ON;
    //INT0IE_bit = 1;
     
-    INTCON |=  0x12;
+    //INTCON |=  0x12;
     asm("nop");
-    xTaskCreate(&FunctionA,0,0); 
-    
+    xTaskCreate(&FunctionA,9,0); 
+        asm("nop");
+
    // FunctionA();
     return;
 }
